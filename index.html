@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КУО</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;700&display=swap');
+
+/* ══════════════════════════════════
+   BASE
+══════════════════════════════════ */
+:root {
+  --p1: #7c3aed;
+  --p2: #4f46e5;
+  --p3: #2563eb;
+  --acc: #a78bfa;
+  --acc2: #818cf8;
+  --pink: #ec4899;
+  --gold: #fbbf24;
+  --green: #10b981;
+  --red: #ef4444;
+  --glass: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+  --glass-hover: rgba(255,255,255,0.10);
+  --blur: blur(20px);
+  --text: #f1f0ff;
+  --text2: rgba(200,196,255,0.7);
+  --text3: rgba(150,145,200,0.5);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  min-height: 100vh;
+  font-family: 'Geologica', sans-serif;
+  color: var(--text);
+  overflow-x: hidden;
+  background: #060412;
+}
+
+/* Animated gradient background */
+.bg {
+  position: fixed; inset: 0; z-index: 0;
+  background: linear-gradient(135deg, #060412 0%, #0f0826 30%, #150d35 60%, #060412 100%);
+}
+.bg-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none;
+}
+.bg-orb1 {
+  width: 55vw; height: 55vw; max-width: 400px; max-height: 400px;
+  background: radial-gradient(circle, rgba(124,58,237,0.35) 0%, transparent 70%);
+  top: -10%; left: -15%;
+  animation: drift1 12s ease-in-out infinite alternate;
+}
+.bg-orb2 {
+  width: 50vw; height: 50vw; max-width: 380px; max-height: 380px;
+  background: radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 70%);
+  bottom: 10%; right: -15%;
+  animation: drift2 14s ease-in-out infinite alternate;
+}
+.bg-orb3 {
+  width: 40vw; height: 40vw; max-width: 280px; max-height: 280px;
+  background: radial-gradient(circle, rgba(236,72,153,0.18) 0%, transparent 70%);
+  top: 40%; left: 30%;
+  animation: drift3 10s ease-in-out infinite alternate;
+}
+@keyframes drift1 { to { transform: translate(8%, 12%); } }
+@keyframes drift2 { to { transform: translate(-10%, -8%); } }
+@keyframes drift3 { to { transform: translate(-5%, 10%); } }
+
+/* ══════════════════════════════════
+   LAYOUT
+══════════════════════════════════ */
+.app {
+  position: relative; z-index: 1;
+  max-width: 430px; margin: 0 auto;
+  display: flex; flex-direction: column;
+  padding: 0 0 80px;
+}
+
+/* ══════════════════════════════════
+   GLASS MIXIN
+══════════════════════════════════ */
+.glass {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-border);
+}
+
+/* ══════════════════════════════════
+   HEADER
+══════════════════════════════════ */
+.header {
+  padding: 52px 24px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-logo {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
+.header-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--acc);
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 100px;
+  padding: 4px 10px;
+}
+
+/* ══════════════════════════════════
+   HERO — BUTTON IN YOUR FACE
+══════════════════════════════════ */
+.hero { padding: 8px 20px 28px; }
+
+.btn-hero {
+  width: 100%;
+  padding: 0;
+  border: none; cursor: pointer;
+  border-radius: 24px;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 40%, #2563eb 80%, #7c3aed 100%);
+  background-size: 200% 200%;
+  animation: btnGrad 5s ease infinite;
+  box-shadow:
+    0 20px 60px rgba(124,58,237,0.5),
+    0 8px 20px rgba(79,70,229,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  transform-style: preserve-3d;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-hero:active {
+  transform: scale(0.97);
+  box-shadow: 0 8px 30px rgba(124,58,237,0.4), 0 4px 10px rgba(79,70,229,0.3);
+}
+@keyframes btnGrad {
+  0%,100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* Shine sweep */
+.btn-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
+  animation: sweep 3.5s ease-in-out infinite;
+}
+@keyframes sweep {
+  0%,100% { transform: translateX(-120%); }
+  60%     { transform: translateX(120%); }
+}
+
+/* Inner glow ring */
+.btn-hero::after {
+  content: '';
+  position: absolute; inset: -1px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent, rgba(255,255,255,0.1));
+  pointer-events: none;
+}
+
+.btn-hero-inner {
+  position: relative; z-index: 1;
+  padding: 26px 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.btn-hero-emoji { font-size: 38px; line-height: 1; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+.btn-hero-text {
+  font-family: 'Geologica', sans-serif;
+  font-weight: 900; font-size: 17px;
+  color: #fff; letter-spacing: 0.5px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  text-transform: uppercase;
+}
+.btn-hero-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: rgba(255,255,255,0.6);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* Pulse rings */
+.pulse-rings {
+  position: absolute; inset: -20px;
+  pointer-events: none; overflow: visible;
+}
+.pulse-ring {
+  position: absolute; inset: 20px;
+  border-radius: 28px;
+  border: 1.5px solid rgba(167,139,250,0.4);
+  animation: pulseRing 2.5s ease-out infinite;
+}
+.pulse-ring:nth-child(2) { animation-delay: 0.8s; }
+.pulse-ring:nth-child(3) { animation-delay: 1.6s; }
+@keyframes pulseRing {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.18); opacity: 0; }
+}
+
+/* ══════════════════════════════════
+   KUO DISPLAY
+══════════════════════════════════ */
+.kuo-section { padding: 0 20px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.kuo-card {
+  border-radius: 20px;
+  padding: 20px 18px;
+  position: relative; overflow: hidden;
+}
+.kuo-card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 8px;
+}
+.kuo-card-num {
+  font-family: 'Geologica', sans-serif;
+  font-weight: 900; font-size: 52px;
+  line-height: 0.9; letter-spacing: -2px;
+  transition: color 0.5s;
+}
+.kuo-card-num.z  { color: var(--green); }
+.kuo-card-num.m  { background: linear-gradient(135deg, var(--acc), var(--acc2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.kuo-card-num.h  { color: var(--red); text-shadow: 0 0 30px rgba(239,68,68,0.5); }
+.kuo-card-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: var(--text3); margin-top: 6px; letter-spacing: 1px;
+}
+.kuo-card-ghost {
+  position: absolute; right: -8px; bottom: -16px;
+  font-family: 'Geologica', sans-serif;
+  font-weight: 900; font-size: 80px; letter-spacing: -4px;
+  color: rgba(255,255,255,0.03); pointer-events: none; line-height: 1;
+  user-select: none;
+}
+.kuo-card.month-card  { background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.08)); border: 1px solid rgba(124,58,237,0.25); }
+.kuo-card.alltime-card { background: linear-gradient(135deg, rgba(251,191,36,0.1), rgba(245,158,11,0.05)); border: 1px solid rgba(251,191,36,0.2); }
+.kuo-card.alltime-card .kuo-card-num { color: var(--gold); }
+
+/* ══════════════════════════════════
+   STATS ROW
+══════════════════════════════════ */
+.stats-row {
+  margin: 0 20px 20px;
+  border-radius: 18px;
+  padding: 16px 20px;
+  display: flex; gap: 0;
+}
+.stat-item { flex: 1; text-align: center; position: relative; }
+.stat-item + .stat-item::before {
+  content: '';
+  position: absolute; left: 0; top: 15%; bottom: 15%;
+  width: 1px; background: var(--glass-border);
+}
+.stat-val {
+  font-family: 'Geologica', sans-serif;
+  font-weight: 900; font-size: 26px; line-height: 1;
+  color: var(--text);
+}
+.stat-val.green { color: var(--green); }
+.stat-val.red   { color: var(--red); }
+.stat-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; color: var(--text3);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-top: 4px; line-height: 1.4;
+}
+
+/* ══════════════════════════════════
+   STREAK BAR
+══════════════════════════════════ */
+.streak-bar {
+  margin: 0 20px 20px;
+  border-radius: 18px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+.streak-arc {
+  flex-shrink: 0; width: 56px; height: 56px;
+  position: relative;
+}
+.streak-arc svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.streak-arc-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 4; }
+.streak-arc-fg { fill: none; stroke: var(--green); stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+.streak-arc-txt {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.streak-num { font-family: 'Geologica', sans-serif; font-weight: 900; font-size: 16px; color: var(--green); line-height: 1; }
+.streak-unit2 { font-family: 'JetBrains Mono', monospace; font-size: 6px; color: var(--text3); letter-spacing: 1px; }
+.streak-info { flex: 1; }
+.streak-title { font-weight: 700; font-size: 14px; color: var(--text); }
+.streak-sub { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text2); margin-top: 3px; letter-spacing: 0.5px; }
+.streak-rec { text-align: right; flex-shrink: 0; }
+.streak-rec-num { font-family: 'Geologica', sans-serif; font-weight: 900; font-size: 22px; color: var(--acc); }
+.streak-rec-lbl { font-family: 'JetBrains Mono', monospace; font-size: 7px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; display: block; margin-top: 2px; }
+
+/* ══════════════════════════════════
+   SECTION HEADER
+══════════════════════════════════ */
+.sec-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text3); padding: 0 24px 10px;
+}
+
+/* ══════════════════════════════════
+   CALENDAR
+══════════════════════════════════ */
+.cal-wrap { margin: 0 20px 20px; border-radius: 22px; overflow: hidden; }
+.cal-head {
+  padding: 18px 18px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cal-nav {
+  width: 36px; height: 36px; border-radius: 12px;
+  background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  cursor: pointer; color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; transition: all 0.2s;
+}
+.cal-nav:active { background: rgba(167,139,250,0.2); color: var(--acc); transform: scale(0.9); }
+.cal-month-name {
+  font-family: 'Geologica', sans-serif;
+  font-weight: 700; font-size: 14px;
+  letter-spacing: 0.5px; text-transform: uppercase; color: var(--text);
+}
+
+.cal-wds { display: grid; grid-template-columns: repeat(7,1fr); padding: 0 10px 8px; }
+.cal-wd { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--text3); letter-spacing: 1px; padding: 4px 0; }
+.cal-wd.we { color: rgba(167,139,250,0.5); }
+
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; padding: 0 10px 14px; }
+
+.cal-day {
+  aspect-ratio: 1; border-radius: 10px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer; position: relative; overflow: hidden;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  transition: transform 0.1s, background 0.2s, border-color 0.2s;
+  gap: 2px;
+}
+.cal-day:not(.empty):not(.future):active { transform: scale(0.88); }
+.cal-day.empty { background: transparent; pointer-events: none; }
+.cal-day.future { opacity: 0.18; pointer-events: none; }
+.cal-day.binge  { background: rgba(124,58,237,0.12); }
+.cal-day.today  { border-color: rgba(167,139,250,0.5); background: rgba(167,139,250,0.08); }
+.cal-day.sel    { border-color: var(--acc); background: rgba(167,139,250,0.15); box-shadow: 0 0 16px rgba(167,139,250,0.25); }
+.cal-day.maxs   { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.3); }
+
+.cal-day-n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text3); line-height: 1; z-index: 1;
+}
+.cal-day.today .cal-day-n { color: var(--acc); font-weight: 700; }
+.cal-day.maxs  .cal-day-n { color: var(--red); }
+.cal-day.sel   .cal-day-n { color: var(--acc); }
+
+.cal-dots { display: flex; gap: 1.5px; flex-wrap: wrap; justify-content: center; max-width: 80%; }
+.cdot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+.sober-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(16,185,129,0.35); }
+
+.cal-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; display: flex; }
+.cal-bar-s { flex: 1; }
+
+/* ══════════════════════════════════
+   LEGEND
+══════════════════════════════════ */
+.legend { padding: 0 24px 20px; display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.leg { display: flex; align-items: center; gap: 5px; }
+.leg-d { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.leg-t { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text3); }
+
+/* ══════════════════════════════════
+   LOG PANEL
+══════════════════════════════════ */
+.log-outer { margin: 0 20px 20px; border-radius: 22px; overflow: hidden; display: none; }
+.log-outer.open { display: block; }
+.log-inner { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+
+.log-head { display: flex; align-items: center; justify-content: space-between; }
+.log-date {
+  font-family: 'Geologica', sans-serif; font-weight: 700; font-size: 16px;
+  background: linear-gradient(90deg, var(--acc), var(--acc2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.log-close {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+  cursor: pointer; color: var(--text3); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.log-close:active { background: rgba(239,68,68,0.2); color: var(--red); }
+
+.drinks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.drink-card {
+  border-radius: 16px; padding: 12px 11px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.drink-head { display: flex; align-items: center; justify-content: space-between; }
+.drink-name { display: flex; align-items: center; gap: 5px; }
+.drink-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.drink-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.drink-coeff {
+  font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--text3);
+  background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 5px;
+}
+
+.unit-pills { display: flex; gap: 3px; }
+.upill {
+  flex: 1; padding: 3px 0; border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-size: 7px; letter-spacing: 0.5px;
+  color: var(--text3); text-transform: uppercase; text-align: center;
+  transition: all 0.15s;
+}
+.upill.on {
+  background: linear-gradient(135deg, rgba(124,58,237,0.6), rgba(79,70,229,0.6));
+  border-color: rgba(167,139,250,0.4); color: #fff;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.3);
+}
+
+.stepper {
+  display: flex; align-items: stretch;
+  border-radius: 12px; overflow: hidden;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.06);
+  height: 42px;
+}
+.step-b {
+  width: 34px; border: none; cursor: pointer;
+  background: transparent; color: var(--text2);
+  font-size: 20px; display: flex; align-items: center; justify-content: center;
+  transition: color 0.15s, background 0.15s; flex-shrink: 0;
+}
+.step-b:active { color: var(--acc); background: rgba(167,139,250,0.12); }
+.step-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.step-val { font-family: 'Geologica', sans-serif; font-weight: 900; font-size: 16px; color: var(--acc); line-height: 1; }
+.step-unit { font-family: 'JetBrains Mono', monospace; font-size: 7px; color: var(--text3); letter-spacing: 1px; margin-top: 2px; }
+
+.btn-save {
+  border: none; cursor: pointer; border-radius: 16px; padding: 15px;
+  background: linear-gradient(135deg, var(--p1), var(--p2));
+  font-family: 'Geologica', sans-serif; font-weight: 900; font-size: 14px;
+  color: #fff; text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 0 8px 24px rgba(124,58,237,0.4);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.btn-save:active { transform: scale(0.97); box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
+
+.btn-clear {
+  border: 1px solid rgba(255,255,255,0.08); cursor: pointer;
+  border-radius: 14px; padding: 11px;
+  background: transparent; color: var(--text3);
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+  transition: all 0.15s;
+}
+.btn-clear:active { border-color: rgba(239,68,68,0.4); color: var(--red); }
+
+/* ══════════════════════════════════
+   FORMULA
+══════════════════════════════════ */
+.formula-wrap { margin: 0 20px 20px; border-radius: 18px; padding: 16px 20px; }
+.formula-txt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--text3); line-height: 2;
+}
+.fa { color: var(--acc); }
+.fb { color: var(--gold); }
+
+/* ══════════════════════════════════
+   LEADERBOARD
+══════════════════════════════════ */
+.lb-wrap { margin: 0 20px 20px; border-radius: 22px; overflow: hidden; }
+.lb-inner { padding: 18px 18px; display: flex; flex-direction: column; gap: 12px; }
+
+.lb-tabs { display: flex; gap: 6px; }
+.lb-tab {
+  flex: 1; padding: 9px 6px; border-radius: 12px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  color: var(--text3); letter-spacing: 1px; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.lb-tab.on {
+  background: linear-gradient(135deg, rgba(124,58,237,0.5), rgba(79,70,229,0.4));
+  border-color: rgba(167,139,250,0.35); color: #fff;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.25);
+}
+.lb-title-txt {
+  font-family: 'Geologica', sans-serif; font-weight: 700; font-size: 13px; color: var(--text);
+}
+
+.lb-rows { display: flex; flex-direction: column; gap: 6px; }
+.lb-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.lb-row.r0 { background: rgba(251,191,36,0.07); border-color: rgba(251,191,36,0.2); }
+.lb-row.r1 { background: rgba(203,213,225,0.05); border-color: rgba(203,213,225,0.15); }
+.lb-row.r2 { background: rgba(192,120,64,0.07); border-color: rgba(192,120,64,0.2); }
+.lb-row.me { border-color: rgba(167,139,250,0.5); box-shadow: 0 0 16px rgba(167,139,250,0.15); }
+.lb-row::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 14px 0 0 14px;
+}
+.lb-row.r0::before { background: linear-gradient(180deg,#fbbf24,#f59e0b); }
+.lb-row.r1::before { background: linear-gradient(180deg,#e2e8f0,#94a3b8); }
+.lb-row.r2::before { background: linear-gradient(180deg,#c07840,#92400e); }
+.lb-row.me::before { background: linear-gradient(180deg,var(--acc),var(--acc2)); }
+
+.lb-rank { width: 22px; text-align: center; font-size: 14px; flex-shrink: 0; }
+.lb-name { flex: 1; font-size: 11px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-row.me .lb-name { color: var(--acc); }
+.lb-kuo {
+  font-family: 'Geologica', sans-serif; font-weight: 900; font-size: 16px; color: var(--text);
+}
+.lb-row.r0 .lb-kuo { color: var(--gold); }
+.lb-meta { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--text3); min-width: 30px; text-align: right; }
+
+.lb-empty {
+  text-align: center; padding: 24px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3);
+  letter-spacing: 1px; line-height: 2;
+}
+
+.lb-input-row { display: flex; gap: 8px; }
+.lb-input {
+  flex: 1; border-radius: 14px; padding: 11px 14px;
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  outline: none; letter-spacing: 1px; transition: border-color 0.2s;
+}
+.lb-input::placeholder { color: var(--text3); }
+.lb-input:focus { border-color: rgba(167,139,250,0.5); }
+.lb-go {
+  padding: 11px 16px; border-radius: 14px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--p1), var(--p2));
+  font-family: 'Geologica', sans-serif; font-weight: 700; font-size: 12px;
+  color: #fff; letter-spacing: 0.5px; text-transform: uppercase;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.35);
+  transition: transform 0.12s;
+}
+.lb-go:active { transform: scale(0.95); }
+.lb-status { font-family: 'JetBrains Mono', monospace; font-size: 9px; text-align: center; min-height: 14px; letter-spacing: 1px; color: var(--text3); }
+.lb-status.ok  { color: var(--green); }
+.lb-status.err { color: var(--red); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.2); border-radius: 2px; }
+
+/* Entry animation */
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+.app > * { animation: slideUp 0.5s ease backwards; }
+.app > *:nth-child(1){animation-delay:.00s}
+.app > *:nth-child(2){animation-delay:.05s}
+.app > *:nth-child(3){animation-delay:.10s}
+.app > *:nth-child(4){animation-delay:.15s}
+.app > *:nth-child(5){animation-delay:.18s}
+.app > *:nth-child(6){animation-delay:.21s}
+.app > *:nth-child(7){animation-delay:.24s}
+.app > *:nth-child(8){animation-delay:.27s}
+.app > *:nth-child(9){animation-delay:.30s}
+.app > *:nth-child(10){animation-delay:.33s}
+</style>
+</head>
+<body>
+<div class="bg">
+  <div class="bg-orb bg-orb1"></div>
+  <div class="bg-orb bg-orb2"></div>
+  <div class="bg-orb bg-orb3"></div>
+</div>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">🍺 Алкалендарь</div>
+    <div class="header-pill" id="hdr-month">Фев 2025</div>
+  </div>
+
+  <!-- HERO BUTTON -->
+  <div class="hero">
+    <button class="btn-hero" onclick="openToday()">
+      <div class="pulse-rings">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+      </div>
+      <div class="btn-hero-inner">
+        <div class="btn-hero-emoji">🔥</div>
+        <div class="btn-hero-text">Обхуяривался сегодня</div>
+        <div class="btn-hero-sub">Нажми чтобы отметить</div>
+      </div>
+    </button>
+  </div>
+
+  <!-- KUO CARDS -->
+  <div class="kuo-section">
+    <div class="kuo-card month-card glass">
+      <div class="kuo-card-label">КУО · Месяц</div>
+      <div class="kuo-card-num m" id="kuo-month">0</div>
+      <div class="kuo-card-sub" id="kuo-month-sub">серия: 0 дн.</div>
+      <div class="kuo-card-ghost">КУО</div>
+    </div>
+    <div class="kuo-card alltime-card">
+      <div class="kuo-card-label">КУО · Рекорд</div>
+      <div class="kuo-card-num" id="kuo-max">0</div>
+      <div class="kuo-card-sub" id="kuo-max-sub">за всё время</div>
+      <div class="kuo-card-ghost">MAX</div>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row glass">
+    <div class="stat-item">
+      <div class="stat-val green" id="st-streak">0</div>
+      <div class="stat-lbl">Дней без<br>обхуяривания</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val" id="st-binge">0</div>
+      <div class="stat-lbl">Макс<br>серия</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val" id="st-sober">0</div>
+      <div class="stat-lbl">Трезвых<br>дней</div>
+    </div>
+  </div>
+
+  <!-- STREAK BAR -->
+  <div class="streak-bar glass">
+    <div class="streak-arc">
+      <svg viewBox="0 0 56 56">
+        <circle class="streak-arc-bg" cx="28" cy="28" r="22"/>
+        <circle class="streak-arc-fg" id="arc-fg" cx="28" cy="28" r="22"
+          stroke-dasharray="138.2" stroke-dashoffset="138.2"/>
+      </svg>
+      <div class="streak-arc-txt">
+        <div class="streak-num" id="arc-num">0</div>
+        <div class="streak-unit2">дн.</div>
+      </div>
+    </div>
+    <div class="streak-info">
+      <div class="streak-title" id="streak-title">Без обхуяривания</div>
+      <div class="streak-sub" id="streak-sub">Держись 💪</div>
+    </div>
+    <div class="streak-rec">
+      <div class="streak-rec-num" id="streak-rec">0</div>
+      <span class="streak-rec-lbl">рекорд</span>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="sec-label">Календарь</div>
+  <div class="cal-wrap glass">
+    <div class="cal-head">
+      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+      <div class="cal-month-name" id="cal-lbl"></div>
+      <button class="cal-nav" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="cal-wds">
+      <div class="cal-wd">Пн</div><div class="cal-wd">Вт</div>
+      <div class="cal-wd">Ср</div><div class="cal-wd">Чт</div>
+      <div class="cal-wd">Пт</div>
+      <div class="cal-wd we">Сб</div><div class="cal-wd we">Вс</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend" id="legend"></div>
+
+  <!-- LOG PANEL -->
+  <div class="log-outer glass" id="log-outer">
+    <div class="log-inner">
+      <div class="log-head">
+        <div class="log-date" id="log-date-txt">ДД.ММ.ГГГГ</div>
+        <button class="log-close" onclick="closeLog()">✕</button>
+      </div>
+      <div class="drinks-grid" id="drinks-grid"></div>
+      <button class="btn-save" onclick="saveDay()">Сохранить</button>
+      <button class="btn-clear" onclick="clearDay()">Очистить день</button>
+    </div>
+  </div>
+
+  <!-- FORMULA -->
+  <div class="sec-label">Формула КУО</div>
+  <div class="formula-wrap glass">
+    <div class="formula-txt">
+      <span class="fa">КУО</span> = <span class="fa">серия</span> × ( <span class="fa">пиво_л</span>×<span class="fb">1</span> + <span class="fa">водка_л</span>×<span class="fb">5</span> )
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="sec-label">Таблица лидеров</div>
+  <div class="lb-wrap glass">
+    <div class="lb-inner">
+      <div class="lb-tabs">
+        <button class="lb-tab on" id="lbt-m" onclick="switchLB('month')">📅 За месяц</button>
+        <button class="lb-tab"    id="lbt-a" onclick="switchLB('alltime')">🏆 Всё время</button>
+      </div>
+      <div class="lb-title-txt" id="lb-ttl">Лидеры</div>
+      <div class="lb-rows" id="lb-rows"><div class="lb-empty">Загрузка...</div></div>
+      <div class="lb-status" id="lb-st"></div>
+      <div class="lb-input-row">
+        <input class="lb-input" id="lb-name" placeholder="Твой ник" maxlength="20">
+        <button class="lb-go" onclick="submitLB()">Занести</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════
+// CONFIG
+// ═══════════════════════════════
+const SPIRITS = [
+  {key:'beer',    label:'Пиво',   color:'#f5a623',kuo:1, units:['мл','л','банка'],pm:{банка:500}},
+  {key:'vodka',   label:'Водка',  color:'#a0c4ff',kuo:5, units:['мл','л','стоп'], pm:{стоп:50}},
+  {key:'wine',    label:'Вино',   color:'#c97ab5',kuo:0, units:['мл','л','бокал'],pm:{бокал:150}},
+  {key:'whiskey', label:'Виски',  color:'#c07840',kuo:0, units:['мл','л','стоп'], pm:{стоп:50}},
+  {key:'cognac',  label:'Коньяк', color:'#e8c47a',kuo:0, units:['мл','л','стоп'], pm:{стоп:50}},
+  {key:'rum',     label:'Ром',    color:'#d4622a',kuo:0, units:['мл','л','стоп'], pm:{стоп:50}},
+  {key:'tequila', label:'Текила', color:'#b8d96e',kuo:0, units:['мл','л','стоп'], pm:{стоп:50}},
+  {key:'gin',     label:'Джин',   color:'#7ac4c4',kuo:0, units:['мл','л','стоп'], pm:{стоп:50}},
+];
+
+const MONTHS    = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MONTHS_S  = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+
+function toMl(s,u,v){if(u==='мл')return v;if(u==='л')return v*1000;return v*(s.pm[u]||1);}
+function fromMl(s,u,ml){if(u==='мл')return ml;if(u==='л')return Math.round(ml/10)/100;return Math.round(ml/(s.pm[u]||1)*10)/10;}
+function getStep(s,u){return u==='мл'?50:u==='л'?0.05:1;}
+function dk(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
+function isBinge(log){return log&&SPIRITS.some(s=>(log[s.key+'_ml']||0)>0);}
+function fmtV(v){if(v===Math.floor(v))return String(Math.floor(v));return v.toFixed(2).replace(/\.?0+$/,'');}
+
+// ═══════════════════════════════
+// STATE
+// ═══════════════════════════════
+const logs={}, unitSt={}, tmp={};
+SPIRITS.forEach(s=>{unitSt[s.key]='мл';tmp[s.key]=0;});
+let curDate=new Date(), selDate=null, lbMode='month';
+
+// ═══════════════════════════════
+// KUO MATH
+// ═══════════════════════════════
+function calcMonth(y,m){
+  const dim=new Date(y,m+1,0).getDate();
+  let maxS=0,curS=0,sober=0,total=0,maxB=0,maxV=0;
+  for(let d=1;d<=dim;d++){
+    const log=logs[dk(y,m,d)];
+    if(isBinge(log)){
+      curS++;if(curS>maxS)maxS=curS;
+      const b=log.beer_ml||0,v=log.vodka_ml||0;
+      if(b>maxB)maxB=b;if(v>maxV)maxV=v;
+      total+=SPIRITS.reduce((a,s)=>a+(log[s.key+'_ml']||0),0);
+    }else{curS=0;sober++;}
+  }
+  const kuo=Math.round(maxS*((maxB/1000)*1+(maxV/1000)*5)*100)/100;
+  return{kuo,maxS,sober,total};
+}
+
+function calcAllTime(){
+  const months=new Set(Object.keys(logs).map(k=>k.slice(0,7)));
+  let max=0,lbl='';
+  months.forEach(ym=>{
+    const[y,m]=ym.split('-').map(Number);
+    const{kuo}=calcMonth(y,m-1);
+    if(kuo>max){max=kuo;lbl=`${MONTHS_S[m-1]} ${y}`;}
+  });
+  return{max,lbl};
+}
+
+function calcSoberStreak(){
+  let n=0;const d=new Date();
+  while(n<=730){
+    if(isBinge(logs[dk(d.getFullYear(),d.getMonth(),d.getDate())]))break;
+    n++;d.setDate(d.getDate()-1);
+  }
+  return n;
+}
+
+function maxStreakRange(y,m){
+  const dim=new Date(y,m+1,0).getDate();
+  const ba=[];for(let d=1;d<=dim;d++)ba.push(isBinge(logs[dk(y,m,d)]));
+  let ml=0,ms=0,cur=0,cs=0;
+  for(let i=0;i<ba.length;i++){if(ba[i]){if(!cur)cs=i;cur++;if(cur>ml){ml=cur;ms=cs;}}else cur=0;}
+  return{start:ms,len:ml};
+}
+
+// ═══════════════════════════════
+// UPDATE UI
+// ═══════════════════════════════
+function updateAll(){
+  const y=curDate.getFullYear(),m=curDate.getMonth();
+  const{kuo,maxS,sober}=calcMonth(y,m);
+  const{max,lbl}=calcAllTime();
+  const streak=calcSoberStreak();
+
+  // Header month
+  document.getElementById('hdr-month').textContent=`${MONTHS_S[m]} ${y}`;
+
+  // KUO month
+  const kEl=document.getElementById('kuo-month');
+  kEl.textContent=kuo;
+  kEl.className='kuo-card-num '+(kuo===0?'z':kuo<15?'m':'h');
+  document.getElementById('kuo-month-sub').textContent=`серия: ${maxS} дн.`;
+
+  // KUO alltime
+  document.getElementById('kuo-max').textContent=max;
+  document.getElementById('kuo-max-sub').textContent=lbl||'за всё время';
+
+  // Stats
+  const stEl=document.getElementById('st-streak');
+  stEl.textContent=streak;
+  stEl.className='stat-val'+(streak===0?' red':streak>7?' green':'');
+  document.getElementById('st-binge').textContent=maxS;
+  document.getElementById('st-sober').textContent=sober;
+
+  // Streak arc
+  const circ=138.2;
+  const pct=Math.min(1,streak/30);
+  document.getElementById('arc-fg').style.strokeDashoffset=circ*(1-pct);
+  document.getElementById('arc-num').textContent=streak;
+  document.getElementById('streak-title').textContent=streak===0?'Сегодня был запой':'Дней без обхуяривания';
+  document.getElementById('streak-sub').textContent=streak===0?'Ладно, бывает 🤷':streak>7?'Отличный результат! 💪':'Держишься!';
+  document.getElementById('streak-rec').textContent=streak;
+
+  renderCalendar();
+  renderLB();
+}
+
+// ═══════════════════════════════
+// CALENDAR
+// ═══════════════════════════════
+function renderCalendar(){
+  const y=curDate.getFullYear(),m=curDate.getMonth();
+  document.getElementById('cal-lbl').textContent=`${MONTHS[m]} ${y}`;
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+  const fd=new Date(y,m,1).getDay();
+  const off=fd===0?6:fd-1;
+  const dim=new Date(y,m+1,0).getDate();
+  const now=new Date();
+  const selKey=selDate?dk(selDate.getFullYear(),selDate.getMonth(),selDate.getDate()):null;
+  const sr=maxStreakRange(y,m);
+
+  for(let i=0;i<off;i++){const e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
+
+  for(let d=1;d<=dim;d++){
+    const key=dk(y,m,d);
+    const log=logs[key];
+    const binge=isBinge(log);
+    const isToday=(d===now.getDate()&&m===now.getMonth()&&y===now.getFullYear());
+    const isFuture=(y>now.getFullYear())||(y===now.getFullYear()&&m>now.getMonth())||(y===now.getFullYear()&&m===now.getMonth()&&d>now.getDate());
+    const inMax=binge&&sr.len>0&&(d-1)>=sr.start&&(d-1)<sr.start+sr.len;
+
+    const el=document.createElement('div');
+    let cls='cal-day';
+    if(binge)cls+=' binge';
+    if(isFuture)cls+=' future';
+    if(inMax)cls+=' maxs';
+    if(isToday)cls+=' today';
+    if(selKey===key)cls+=' sel';
+    el.className=cls;
+
+    const n=document.createElement('div');n.className='cal-day-n';n.textContent=d;el.appendChild(n);
+
+    if(binge){
+      const dots=document.createElement('div');dots.className='cal-dots';
+      SPIRITS.forEach(s=>{if((log[s.key+'_ml']||0)>0){const dot=document.createElement('div');dot.className='cdot';dot.style.background=s.color;dots.appendChild(dot);}});
+      el.appendChild(dots);
+      const bar=document.createElement('div');bar.className='cal-bar';
+      SPIRITS.forEach(s=>{if((log[s.key+'_ml']||0)>0){const seg=document.createElement('div');seg.className='cal-bar-s';seg.style.background=s.color;bar.appendChild(seg);}});
+      el.appendChild(bar);
+    }else{
+      const sd=document.createElement('div');sd.className='sober-dot';el.appendChild(sd);
+    }
+
+    if(!isFuture)el.addEventListener('click',()=>openLog(y,m,d));
+    grid.appendChild(el);
+  }
+}
+
+// ═══════════════════════════════
+// BUILD DRINKS GRID
+// ═══════════════════════════════
+function buildDrinks(){
+  const grid=document.getElementById('drinks-grid');
+  grid.innerHTML='';
+  SPIRITS.forEach(s=>{
+    const c=document.createElement('div');c.className='drink-card';
+    c.innerHTML=`
+      <div class="drink-head">
+        <div class="drink-name">
+          <div class="drink-dot" style="background:${s.color}"></div>
+          <span class="drink-label" style="color:${s.color}">${s.label}</span>
+        </div>
+        ${s.kuo?`<div class="drink-coeff">×${s.kuo}</div>`:''}
+      </div>
+      <div class="unit-pills" id="pills-${s.key}"></div>
+      <div class="stepper">
+        <button class="step-b" onclick="step('${s.key}',-1)">−</button>
+        <div class="step-mid">
+          <div class="step-val" id="val-${s.key}">0</div>
+          <div class="step-unit" id="ulbl-${s.key}">мл</div>
+        </div>
+        <button class="step-b" onclick="step('${s.key}',1)">+</button>
+      </div>`;
+    grid.appendChild(c);
+    const pills=document.getElementById(`pills-${s.key}`);
+    s.units.forEach(u=>{
+      const btn=document.createElement('button');
+      btn.className='upill'+(unitSt[s.key]===u?' on':'');
+      btn.id=`pill-${s.key}-${u}`;btn.textContent=u;
+      btn.onclick=()=>setUnit(s.key,u);pills.appendChild(btn);
+    });
+  });
+}
+
+function setUnit(key,u){
+  const s=SPIRITS.find(x=>x.key===key);
+  const ml=toMl(s,unitSt[key],tmp[key]);
+  unitSt[key]=u;tmp[key]=fromMl(s,u,ml);
+  s.units.forEach(uu=>document.getElementById(`pill-${key}-${uu}`)?.classList.toggle('on',uu===u));
+  document.getElementById(`ulbl-${key}`).textContent=u;
+  document.getElementById(`val-${key}`).textContent=fmtV(tmp[key]);
+}
+
+function step(key,dir){
+  const s=SPIRITS.find(x=>x.key===key);
+  tmp[key]=Math.max(0,Math.round((tmp[key]+dir*getStep(s,unitSt[key]))*1000)/1000);
+  document.getElementById(`val-${key}`).textContent=fmtV(tmp[key]);
+}
+
+// ═══════════════════════════════
+// LOG PANEL
+// ═══════════════════════════════
+function openLog(y,m,d){
+  const now=new Date();
+  if((y>now.getFullYear())||(y===now.getFullYear()&&m>now.getMonth())||(y===now.getFullYear()&&m===now.getMonth()&&d>now.getDate()))return;
+  selDate=new Date(y,m,d);
+  const log=logs[dk(y,m,d)]||{};
+  document.getElementById('log-date-txt').textContent=`${String(d).padStart(2,'0')}.${String(m+1).padStart(2,'0')}.${y}`;
+  SPIRITS.forEach(s=>{
+    tmp[s.key]=fromMl(s,unitSt[s.key],log[s.key+'_ml']||0);
+    const el=document.getElementById(`val-${s.key}`);if(el)el.textContent=fmtV(tmp[s.key]);
+  });
+  const panel=document.getElementById('log-outer');
+  panel.classList.add('open');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  renderCalendar();
+}
+
+function closeLog(){
+  selDate=null;
+  document.getElementById('log-outer').classList.remove('open');
+  renderCalendar();
+}
+
+function saveDay(){
+  if(!selDate)return;
+  const entry={};
+  SPIRITS.forEach(s=>entry[s.key+'_ml']=toMl(s,unitSt[s.key],tmp[s.key]));
+  logs[dk(selDate.getFullYear(),selDate.getMonth(),selDate.getDate())]=entry;
+  // Flash KUO
+  const k=document.getElementById('kuo-month');
+  k.style.transform='scale(1.08)';k.style.transition='transform 0.15s';
+  setTimeout(()=>k.style.transform='',200);
+  updateAll();
+}
+
+function clearDay(){
+  if(!selDate)return;
+  delete logs[dk(selDate.getFullYear(),selDate.getMonth(),selDate.getDate())];
+  SPIRITS.forEach(s=>{tmp[s.key]=0;const e=document.getElementById(`val-${s.key}`);if(e)e.textContent=0;});
+  updateAll();
+}
+
+function openToday(){
+  const t=new Date();
+  curDate=new Date(t.getFullYear(),t.getMonth(),1);
+  updateAll();
+  openLog(t.getFullYear(),t.getMonth(),t.getDate());
+}
+
+function changeMonth(d){
+  curDate=new Date(curDate.getFullYear(),curDate.getMonth()+d,1);
+  selDate=null;
+  document.getElementById('log-outer').classList.remove('open');
+  updateAll();
+}
+
+// ═══════════════════════════════
+// LEGEND
+// ═══════════════════════════════
+function buildLegend(){
+  const w=document.getElementById('legend');
+  SPIRITS.forEach(s=>w.innerHTML+=`<div class="leg"><div class="leg-d" style="background:${s.color}"></div><div class="leg-t">${s.label}${s.kuo?'×'+s.kuo:''}</div></div>`);
+  w.innerHTML+=`<div class="leg"><div class="leg-d" style="background:#ef4444;box-shadow:0 0 5px #ef444488"></div><div class="leg-t" style="color:rgba(239,68,68,0.7)">Макс серия</div></div>`;
+}
+
+// ═══════════════════════════════
+// LEADERBOARD
+// ═══════════════════════════════
+let lbMode='month';
+
+async function renderLB(){
+  const y=curDate.getFullYear(),m=curDate.getMonth();
+  document.getElementById('lb-ttl').textContent=lbMode==='month'?`Лидеры — ${MONTHS[m]} ${y}`:'Лидеры — все времена';
+  const rows=document.getElementById('lb-rows');
+  rows.innerHTML='<div class="lb-empty">Загрузка...</div>';
+  try{
+    const pfx=lbMode==='month'?`lb3-m:${y}-${String(m+1).padStart(2,'0')}:`:'lb3-a:';
+    const res=await window.storage.list(pfx,true);
+    const keys=(res?.keys)||[];
+    if(!keys.length){rows.innerHTML='<div class="lb-empty">Пока пусто.\nБудь первым!</div>';return;}
+    const entries=(await Promise.all(keys.map(async k=>{
+      try{const r=await window.storage.get(k,true);return r?JSON.parse(r.value):null;}catch{return null;}
+    }))).filter(Boolean).sort((a,b)=>b.kuo-a.kuo).slice(0,12);
+    const me=(document.getElementById('lb-name').value||'').trim().toUpperCase();
+    const medals=['🥇','🥈','🥉'];
+    rows.innerHTML='';
+    entries.forEach((e,i)=>{
+      const isMe=me&&e.name===me;
+      const row=document.createElement('div');
+      row.className='lb-row r'+i+(isMe?' me':'');
+      row.innerHTML=`<div class="lb-rank">${i<3?medals[i]:i+1}</div><div class="lb-name">${e.name}${isMe?' ◀':''}</div><div class="lb-kuo">${e.kuo}</div><div class="lb-meta">${e.lbl||''}</div>`;
+      rows.appendChild(row);
+    });
+  }catch{rows.innerHTML='<div class="lb-empty">Ошибка загрузки</div>';}
+}
+
+function switchLB(mode){
+  lbMode=mode;
+  document.getElementById('lbt-m').classList.toggle('on',mode==='month');
+  document.getElementById('lbt-a').classList.toggle('on',mode==='alltime');
+  renderLB();
+}
+
+async function submitLB(){
+  const nameRaw=document.getElementById('lb-name').value.trim();
+  if(!nameRaw){setSt('Введи ник!','err');return;}
+  const name=nameRaw.toUpperCase();
+  const y=curDate.getFullYear(),m=curDate.getMonth();
+  const{kuo}=calcMonth(y,m);
+  const{max,lbl:albl}=calcAllTime();
+  const mLbl=`${MONTHS_S[m]} ${y}`;
+  const slug=name.replace(/[^A-ZА-ЯЁ0-9]/gi,'-').slice(0,15);
+  setSt('Сохранение...','');
+  try{
+    await window.storage.set(`lb3-m:${y}-${String(m+1).padStart(2,'0')}:${slug}`,JSON.stringify({name,kuo,lbl:mLbl,ts:Date.now()}),true);
+    let bestKuo=max;
+    try{const ex=await window.storage.get(`lb3-a:${slug}`,true);if(ex){const p=JSON.parse(ex.value);if(p.kuo>bestKuo)bestKuo=p.kuo;}}catch{}
+    await window.storage.set(`lb3-a:${slug}`,JSON.stringify({name,kuo:bestKuo,lbl:albl||mLbl,ts:Date.now()}),true);
+    setSt('✓ Занесено!','ok');
+    await renderLB();
+  }catch{setSt('Ошибка','err');}
+}
+
+function setSt(msg,cls){const e=document.getElementById('lb-st');e.textContent=msg;e.className='lb-status'+(cls?' '+cls:'');}
+
+// ═══════════════════════════════
+// DEMO
+// ═══════════════════════════════
+function loadDemo(){
+  const y=curDate.getFullYear(),m=curDate.getMonth();
+  const mk=(d,data)=>logs[dk(y,m,d)]=Object.assign({beer_ml:0,vodka_ml:0,wine_ml:0,whiskey_ml:0,cognac_ml:0,rum_ml:0,tequila_ml:0,gin_ml:0},data);
+  mk(1,{beer_ml:1500,wine_ml:200});
+  mk(2,{beer_ml:2500,vodka_ml:100,whiskey_ml:100});
+  mk(3,{beer_ml:1000,vodka_ml:200,wine_ml:300});
+  mk(7,{beer_ml:3000,wine_ml:450,rum_ml:100});
+  mk(8,{beer_ml:2000,vodka_ml:300,gin_ml:100});
+  mk(14,{beer_ml:500,wine_ml:450,cognac_ml:50});
+  [9,10,11,12,13].forEach(d=>logs[dk(y,m-1,d)]={beer_ml:3000,vodka_ml:400,wine_ml:0,whiskey_ml:0,cognac_ml:0,rum_ml:0,tequila_ml:0,gin_ml:0});
+}
+
+// INIT
+buildDrinks();
+buildLegend();
+loadDemo();
+updateAll();
+</script>
+</body>
+</html>
