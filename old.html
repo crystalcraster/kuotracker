@@ -760,31 +760,6 @@ const logs={}, unitSt={}, tmp={};
 SPIRITS.forEach(s=>{unitSt[s.key]='мл';tmp[s.key]=0;});
 let curDate=new Date(), selDate=null, lbMode='month';
 
-const STORAGE_KEY='kuo3-logs';
-const storageApi=(function(){
-  if(window.storage&&typeof window.storage.list==='function'&&typeof window.storage.get==='function'&&typeof window.storage.set==='function'){
-    return window.storage;
-  }
-  return {
-    async list(prefix){
-      const keys=[];
-      for(let i=0;i<localStorage.length;i++){
-        const k=localStorage.key(i);
-        if(k&&k.startsWith(prefix))keys.push(k);
-      }
-      return {keys};
-    },
-    async get(key){
-      const value=localStorage.getItem(key);
-      return value===null?null:{value};
-    },
-    async set(key,value){
-      localStorage.setItem(key,value);
-      return true;
-    }
-  };
-})();
-
 // ═══════════════════════════════
 // KUO MATH
 // ═══════════════════════════════
@@ -1002,27 +977,11 @@ function closeLog(){
   renderCalendar();
 }
 
-function saveLogs(){
-  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(logs));}catch{}
-}
-
-function loadLogs(){
-  try{
-    const raw=localStorage.getItem(STORAGE_KEY);
-    if(!raw)return false;
-    const parsed=JSON.parse(raw);
-    if(!parsed||typeof parsed!=='object')return false;
-    Object.keys(parsed).forEach(k=>{logs[k]=parsed[k];});
-    return Object.keys(parsed).length>0;
-  }catch{return false;}
-}
-
 function saveDay(){
   if(!selDate)return;
   const entry={};
   SPIRITS.forEach(s=>entry[s.key+'_ml']=toMl(s,unitSt[s.key],tmp[s.key]));
   logs[dk(selDate.getFullYear(),selDate.getMonth(),selDate.getDate())]=entry;
-  saveLogs();
   // Flash KUO
   const k=document.getElementById('kuo-month');
   k.style.transform='scale(1.08)';k.style.transition='transform 0.15s';
@@ -1033,7 +992,6 @@ function saveDay(){
 function clearDay(){
   if(!selDate)return;
   delete logs[dk(selDate.getFullYear(),selDate.getMonth(),selDate.getDate())];
-  saveLogs();
   SPIRITS.forEach(s=>{tmp[s.key]=0;const e=document.getElementById(`val-${s.key}`);if(e)e.textContent=0;});
   updateAll();
 }
@@ -1064,6 +1022,8 @@ function buildLegend(){
 // ═══════════════════════════════
 // LEADERBOARD
 // ═══════════════════════════════
+let lbMode='month';
+
 async function renderLB(){
   const y=curDate.getFullYear(),m=curDate.getMonth();
   document.getElementById('lb-ttl').textContent=lbMode==='month'?`Лидеры — ${MONTHS[m]} ${y}`:'Лидеры — все времена';
@@ -1071,11 +1031,11 @@ async function renderLB(){
   rows.innerHTML='<div class="lb-empty">Загрузка...</div>';
   try{
     const pfx=lbMode==='month'?`lb3-m:${y}-${String(m+1).padStart(2,'0')}:`:'lb3-a:';
-    const res=await storageApi.list(pfx,true);
+    const res=await window.storage.list(pfx,true);
     const keys=(res?.keys)||[];
     if(!keys.length){rows.innerHTML='<div class="lb-empty">Пока пусто.\nБудь первым!</div>';return;}
     const entries=(await Promise.all(keys.map(async k=>{
-      try{const r=await storageApi.get(k,true);return r?JSON.parse(r.value):null;}catch{return null;}
+      try{const r=await window.storage.get(k,true);return r?JSON.parse(r.value):null;}catch{return null;}
     }))).filter(Boolean).sort((a,b)=>b.kuo-a.kuo).slice(0,12);
     const me=(document.getElementById('lb-name').value||'').trim().toUpperCase();
     const medals=['🥇','🥈','🥉'];
@@ -1108,10 +1068,10 @@ async function submitLB(){
   const slug=name.replace(/[^A-ZА-ЯЁ0-9]/gi,'-').slice(0,15);
   setSt('Сохранение...','');
   try{
-    await storageApi.set(`lb3-m:${y}-${String(m+1).padStart(2,'0')}:${slug}`,JSON.stringify({name,kuo,lbl:mLbl,ts:Date.now()}),true);
+    await window.storage.set(`lb3-m:${y}-${String(m+1).padStart(2,'0')}:${slug}`,JSON.stringify({name,kuo,lbl:mLbl,ts:Date.now()}),true);
     let bestKuo=max;
-    try{const ex=await storageApi.get(`lb3-a:${slug}`,true);if(ex){const p=JSON.parse(ex.value);if(p.kuo>bestKuo)bestKuo=p.kuo;}}catch{}
-    await storageApi.set(`lb3-a:${slug}`,JSON.stringify({name,kuo:bestKuo,lbl:albl||mLbl,ts:Date.now()}),true);
+    try{const ex=await window.storage.get(`lb3-a:${slug}`,true);if(ex){const p=JSON.parse(ex.value);if(p.kuo>bestKuo)bestKuo=p.kuo;}}catch{}
+    await window.storage.set(`lb3-a:${slug}`,JSON.stringify({name,kuo:bestKuo,lbl:albl||mLbl,ts:Date.now()}),true);
     setSt('✓ Занесено!','ok');
     await renderLB();
   }catch{setSt('Ошибка','err');}
@@ -1137,7 +1097,7 @@ function loadDemo(){
 // INIT
 buildDrinks();
 buildLegend();
-if(!loadLogs())loadDemo();
+loadDemo();
 updateAll();
 </script>
 </body>
